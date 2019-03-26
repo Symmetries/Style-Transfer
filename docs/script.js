@@ -1,6 +1,6 @@
 window.onload = () => {
 	video = document.querySelector('video');
-	navigator.mediaDevides.getUserMedia({
+	navigator.mediaDevices.getUserMedia({
 		video: {
 			facingMode: "user"
 		}
