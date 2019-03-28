@@ -6,7 +6,6 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.image import imsave
-import IPython.display
 import time
 import numpy as np
 from skimage.io import imread
@@ -32,7 +31,7 @@ num_style_layers = len(style_layers)
 
 data_root = 'dataset/train2014/'
 
-batch_size = 18
+batch_size = 20
 
 fileList = [os.path.join(data_root, f) for f in os.listdir(data_root)]
 
@@ -263,15 +262,11 @@ style = imread(style_path).astype('float32')
 
 image_transformation_network = tf.keras.Sequential()
 
-image_transformation_network.add(Conv2D(filters=32, kernel_size=3, padding='same', input_shape=(image_size, image_size, 3), activation='relu'))
+image_transformation_network.add(Conv2D(filters=16, kernel_size=3, padding='same', input_shape=(image_size, image_size, 3), activation='relu'))
 image_transformation_network.add(BatchNormalization())
-image_transformation_network.add(Conv2D(filters=64, kernel_size=3, padding='same', activation='relu'))
+image_transformation_network.add(Conv2D(filters=32, kernel_size=3, padding='same', activation='relu'))
 image_transformation_network.add(BatchNormalization())
-image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
-image_transformation_network.add(BatchNormalization())
-image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
-image_transformation_network.add(BatchNormalization())
-#image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
+#image_transformation_network.add(Conv2D(filters=64, kernel_size=3, padding='same', activation='relu'))
 #image_transformation_network.add(BatchNormalization())
 #image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
 #image_transformation_network.add(BatchNormalization())
@@ -287,9 +282,13 @@ image_transformation_network.add(BatchNormalization())
 #image_transformation_network.add(BatchNormalization())
 #image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
 #image_transformation_network.add(BatchNormalization())
-image_transformation_network.add(Conv2DTranspose(filters=64, kernel_size=3, padding='same'))
-image_transformation_network.add(BatchNormalization())
-image_transformation_network.add(Conv2DTranspose(filters=32, kernel_size=3, padding='same', activation='relu'))
+#image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
+#image_transformation_network.add(BatchNormalization())
+#image_transformation_network.add(Conv2D(filters=128, kernel_size=3, padding='same', activation='relu'))
+#image_transformation_network.add(BatchNormalization())
+#image_transformation_network.add(Conv2DTranspose(filters=32, kernel_size=3, padding='same'))
+#image_transformation_network.add(BatchNormalization())
+image_transformation_network.add(Conv2DTranspose(filters=16, kernel_size=3, padding='same', activation='relu'))
 image_transformation_network.add(BatchNormalization())
 image_transformation_network.add(Conv2D(filters=3, kernel_size=3, padding='same'))
     
@@ -307,10 +306,10 @@ def image_transformation_loss(y_true, y_pred):
     style_features, content_features = get_features(pre_trained_model, preprocess(y_true), repeated_style)
     gram_style_features = [gram_matrix(style_feature) for style_feature in style_features]
     # content: 1e-8, style: 1e-18 works well
-    return compute_loss(pre_trained_model, (1e-5, 1e-1), y_pred, gram_style_features, content_features)[0]
+    return compute_loss(pre_trained_model, (1e-4, 1e-1), y_pred, gram_style_features, content_features)[0]
 
 # lr: 1e-3 works well
-lr = 1e-3
+lr = 2e-3
 decay = 0.9
 
 steps_per_epoch = 15
@@ -318,6 +317,7 @@ epochs = 1
 for i in range(50):
     print()
     print('Iteration {}, lr = {}'.format(i, lr))
+    #tf.train.GradientDescentOptimizer(learning_rate=lr)
     optimizer = tf.keras.optimizers.SGD(lr=lr, clipnorm=100.)
     image_transformation_network.compile(optimizer=optimizer, loss=image_transformation_loss)
     image_transformation_network.fit_generator(imageLoader(fileList, batch_size), steps_per_epoch=steps_per_epoch, epochs=epochs)
@@ -326,11 +326,11 @@ for i in range(50):
     out = np.clip(deprocess(out.reshape(image_size, image_size, 3)), 0, 255).astype('uint8')
 
     
-    imsave('network_outputs/output_{:03d}.png'.format(i), out)
+    imsave('fast_net_outputs/output_{:03d}.png'.format(i), out)
     
     tf.keras.models.save_model(
         image_transformation_network,
-        'models/network_{:03d}.h5'.format(i),
+        'fast_models/network_{:03d}.h5'.format(i),
         overwrite=True,
         include_optimizer=False
     )
