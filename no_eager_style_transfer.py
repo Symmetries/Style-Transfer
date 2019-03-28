@@ -31,10 +31,11 @@ num_style_layers = len(style_layers)
 
 data_root = 'dataset/train2014/'
 
-batch_size = 30
+batch_size = 10
 
 fileList = [os.path.join(data_root, f) for f in os.listdir(data_root)]
 
+print("Gpu available", tf.test.is_gpu_available())
 
 # In[6]:
 
@@ -211,7 +212,7 @@ def run_style_transfer(content,
 # In[7]:
 
 
-tf.enable_eager_execution()
+# tf.enable_eager_execution()
 
 def imageLoader(files, batch_size):
     L = len(files)
@@ -232,15 +233,15 @@ def rescale_and_crop(img):
     if (len(img.shape) == 3):
         img = tf.stack((img, img, img), axis=3)
     _, width, height, _ = img.shape
-    width = width.value
-    height = height.value
+    #width = width.value
+    #height = height.value
     #width, height = width.value, height.value
     if width > height:
         boxes = [[0.0, 0.0, height/width, 1.0]]
     else:
         boxes = [[0.0, 0.0, 1.0, width/height]]
         
-    return tf.image.crop_and_resize(img, boxes=boxes, crop_size=[image_size, image_size], box_ind=[0])
+    return tf.image.crop_and_resize(img, boxes=boxes, crop_size=[image_size, image_size],box_indices=[0])#, box_ind=[0])
 
 def loadImages(files):
     images = []
@@ -312,7 +313,7 @@ def image_transformation_loss(y_true, y_pred):
 lr = 2e-3
 decay = 0.95
 
-steps_per_epoch = 25
+steps_per_epoch = 10
 epochs = 1
 for i in range(50):
     print()
