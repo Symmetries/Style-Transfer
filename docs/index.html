@@ -1,16 +1,17 @@
 <!doctype html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title> Style Transfer </title>
-	</head>
-	<body>
-		<h1> Real Time Style Transfer in the Browser </h1>
-		<video autopay></video>
-		</br>
-		<canvas id="inputCanvas"></canvas>
-		<canvas id="outputCanvas"></canvas>
-		<script src="script.js"></script>
-	</body>
+  <head>
+    <meta charset="utf-8">
+    <title> Style Transfer </title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <h1> Real Time Style Transfer in the Browser </h1>
+    <video autoplay style="display:none;"></video>
+    </br>
+    <canvas id="inputCanvas"></canvas>
+    <canvas id="outputCanvas"></canvas>
+    <script src="script.js"></script>
+  </body>
 </html>
