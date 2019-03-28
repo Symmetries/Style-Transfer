@@ -5,16 +5,16 @@
     <meta charset="utf-8">
     <title> Style Transfer </title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
-    <style> div {font-size:128px; vertical-align:middle;} </style> 
+    <style> div {font-size:128px;} span{vertical-align:middle;}</style> 
   </head>
   <body>
     <h1> Real Time Style Transfer in the Browser </h1>
     <div>
       <video autoplay style="display:none;"></video>
       <canvas id="inputCanvas"></canvas>
-      + 
+      <span> + </span>
       <img src="https://raw.githubusercontent.com/Symmetries/Style-Transfer/master/style3_256.jpg">
-      = 
+      <span> = </span>
       <canvas id="outputCanvas"></canvas>
     </div>
     <script src="script.js"></script>
