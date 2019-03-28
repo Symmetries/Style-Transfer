@@ -29,7 +29,7 @@ class App {
   }
 
   async loadModel() {
-    this.model = await tf.loadLayersModel('/fast_tfjs_model/model.json');
+    this.model = await tf.loadLayersModel('https://raw.githubusercontent.com/Symmetries/Style-Transfer/master/docs/fast_tfjs_model/model.json');
     this.model_ready = true;
   }
 
